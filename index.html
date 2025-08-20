@@ -32,18 +32,20 @@
   /* Table of Contents Styles */
 #toc {
   position: sticky;
-  top: 20px;
+  top: 40px;  /* space from top of viewport */
   width: 220px;
-  max-height: calc(100vh - 40px); /* keeps it within viewport if very long */
-  overflow-y: auto;               /* scroll if content exceeds max-height */
+  height: auto;       /* expand to fit content */
+  overflow: visible;  /* no inner scroll */
   background: #fff;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-
-  height: auto;                   /* shrink to fit content */
 }
-#toc ul {
+#toc {
+  align-self: flex-start; /* TOC only as tall as its content */
+}
+
+  #toc ul {
   padding-bottom: 0;              /* remove extra padding at bottom */
   margin-bottom: 0;               /* remove extra margin at bottom */
 }
