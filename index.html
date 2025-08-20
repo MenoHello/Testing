@@ -30,18 +30,16 @@
   margin-left: 260px; /* space for fixed TOC */
 }
   /* Table of Contents Styles */
- #toc {
-  position: sticky;
-  top: 40px; /* same as original spacing from top */
-  left: 20px; /* optional small left padding */
-  width: 220px; /* narrow enough to not crowd content */
-  max-height: 90vh; /* ensures it fits on screen */
-  overflow-y: auto; /* allows scrolling inside TOC if too tall */
+#toc {
+  position: sticky;       /* sticks within container */
+  top: 20px;              /* distance from top of container */
+  width: 220px;
+  max-height: calc(100vh - 40px); /* stay within viewport */
+  overflow-y: auto;       /* scroll internally if too tall */
   background: #fff;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  z-index: 1000;
 }
   
  #toc ul {
