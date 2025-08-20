@@ -26,18 +26,24 @@
     gap: 30px;
     padding: 0 20px;
   }
-
+#dynamic-content {
+  margin-left: 260px; /* space for fixed TOC */
+}
   /* Table of Contents Styles */
-  #toc {
-    flex: 0 0 280px;
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    height: fit-content;
-    position: sticky;
-    top: 40px;
-  }
+ #toc {
+  position: fixed;
+  top: 40px; /* same as original spacing from top */
+  left: 20px; /* optional small left padding */
+  width: 220px; /* narrow enough to not crowd content */
+  max-height: 90vh; /* ensures it fits on screen */
+  overflow-y: auto; /* allows scrolling inside TOC if too tall */
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  z-index: 1000;
+}
+  
  #toc ul {
     list-style: none !important;
     padding: 0 !important;
