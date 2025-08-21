@@ -25,6 +25,12 @@
     padding: 0 20px;
   }
 
+  .toc-container {
+  position: relative;
+  max-height: 100%;
+}
+
+
   /* Table of Contents Styles */
   #toc {
     flex: 0 0 220px; /* narrower TOC */
@@ -38,6 +44,13 @@
     top: 40px;
   }
 
+  #toc {
+  position: sticky;
+  top: 20px; /* stays pinned with some spacing */
+  max-height: calc(100vh - 40px); /* prevents it from going off screen */
+  overflow-y: auto; /* adds scroll inside TOC if needed */
+}
+  
   #toc h3 {
     margin-top: 0;
     margin-bottom: 20px;
@@ -114,6 +127,8 @@
 </style>
 </head>
 <body>
+  <div id="HRT-101-GuideContainer">
+
 <div class="container">
   <nav id="toc">
     <h3>Table of Contents</h3>
@@ -177,5 +192,24 @@ function updateActiveTOC() {
 generateTOC();
 window.addEventListener('scroll', updateActiveTOC);
 </script>
+     </div>
+<script>
+    function sendIframeHeight() {
+        const contentContainer = document.getElementById('HRT-101-GuideContainer');
+        if (contentContainer) {
+            const height = contentContainer.scrollHeight + 50; // extra buffer to avoid scrollbar
+            window.parent.postMessage({ type: 'setIframeHeight', height: height }, 'https://www.menohello.com');
+        }
+    }
+    window.addEventListener('DOMContentLoaded', sendIframeHeight);
+    window.addEventListener('load', sendIframeHeight);
+    const containerToObserve = document.getElementById('HRT-101-GuideContainer'); 
+    if (containerToObserve) {
+        const resizeObserver = new ResizeObserver(sendIframeHeight);
+        resizeObserver.observe(containerToObserve);
+    }
+</script>
+
 </body>
 </html>
+
