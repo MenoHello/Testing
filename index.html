@@ -509,9 +509,10 @@ window.addEventListener('scroll', function() {
     }
     
     // Show TOC after scrolling stops (but only if we've scrolled down from top)
-    if (st > 100) { // Only show if scrolled past first 100px
-      scrollTimer = setTimeout(function() {
-        mobileTOC.classList.add('visible');
+   // if (st > 100) { // Only show if scrolled past first 100px
+   //   scrollTimer = setTimeout(function() {
+    //    mobileTOC.classList.add('visible');
+    if (st > 50) { // Show TOC after scrolling past just 50px (in any direction)
       }, 150); // Show after 150ms of no scrolling
     }
     
