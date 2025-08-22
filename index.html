@@ -117,46 +117,14 @@
     display: none; /* Hidden by default */
     margin-top: 10px;
   }
-  
-  /* Enhanced link styling that overrides system defaults */
-  .answer a,
-  .answer a:link,
-  .answer a:visited,
-  .answer a:active {
-    color: #8e599c !important;
-    text-decoration: underline !important;
-    transition: color 0.3s ease !important;
-    -webkit-tap-highlight-color: rgba(142, 89, 156, 0.3) !important;
+  .answer a {
+    color: #ffa798;
+    text-decoration: underline;
+    transition: color 0.3s ease;
   }
-  
-  .answer a:hover,
-  .answer a:focus {
-    color: #7a4d87 !important;
-    text-decoration: underline !important;
+  .answer a:hover {
+    color: #ff8c7a;
   }
-  
-  /* Additional mobile-specific overrides */
-  @media (max-width: 768px) {
-    .answer a,
-    .answer a:link,
-    .answer a:visited,
-    .answer a:active {
-      color: #8e599c !important;
-      -webkit-touch-callout: default !important;
-      -webkit-user-select: auto !important;
-    }
-  }
-  
-  /* iOS Safari specific overrides */
-  @supports (-webkit-overflow-scrolling: touch) {
-    .answer a,
-    .answer a:link,
-    .answer a:visited,
-    .answer a:active {
-      color: #8e599c !important;
-    }
-  }
-  
   .qa-item.open .answer {
     display: block;
   }
@@ -221,39 +189,6 @@
       clearSearchBtn.classList.remove('active');
       clearSearchBtn.disabled = true;
     }
-  }
-
-  // Function to process HTML content and ensure proper formatting
-  function processHTMLContent(content) {
-    if (!content) return '';
-    
-    // Basic safety: sanitize any potentially dangerous scripts while preserving formatting
-    let processed = content
-      .replace(/<script[^>]*>.*?<\/script>/gi, '')
-      .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '')
-      .replace(/on\w+\s*=\s*["'][^"']*["']/gi, ''); // Remove event handlers
-    
-    // Make all links open in new windows with security attributes
-    processed = processed.replace(/<a\s+([^>]*?)>/gi, (match, attributes) => {
-      // Check if target is already specified
-      if (!/target\s*=/i.test(attributes)) {
-        attributes += ' target="_blank"';
-      }
-      // Check if rel is already specified, if not add security attributes
-      if (!/rel\s*=/i.test(attributes)) {
-        attributes += ' rel="noopener noreferrer"';
-      } else {
-        // If rel exists, ensure it includes noopener noreferrer
-        attributes = attributes.replace(/rel\s*=\s*["']([^"']*)["']/i, (relMatch, relValue) => {
-          if (!relValue.includes('noopener')) relValue += ' noopener';
-          if (!relValue.includes('noreferrer')) relValue += ' noreferrer';
-          return `rel="${relValue.trim()}"`;
-        });
-      }
-      return `<a ${attributes.trim()}>`;
-    });
-    
-    return processed;
   }
 
   function createCategoryButtons() {
@@ -325,23 +260,25 @@
 
       const answer = document.createElement('div');
       answer.className = 'answer';
-      // Use innerHTML to render HTML formatting, but process it for safety
-      answer.innerHTML = processHTMLContent(item.Answer);
+      answer.innerHTML = item.Answer;
+
+      // Ensure all links in the answer open in new tab
+      answer.querySelectorAll('a').forEach(link => {
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+      });
 
       itemDiv.appendChild(question);
       itemDiv.appendChild(answer);
 
       itemDiv.addEventListener('click', () => {
-        // If clicking on the currently open item, close it
         if (currentlyOpenItem === itemDiv) {
           itemDiv.classList.remove('open');
           currentlyOpenItem = null;
         } else {
-          // Close the previously open item if it exists
           if (currentlyOpenItem) {
             currentlyOpenItem.classList.remove('open');
           }
-          // Open the clicked item
           itemDiv.classList.add('open');
           currentlyOpenItem = itemDiv;
         }
@@ -403,7 +340,7 @@
     function sendIframeHeight() {
         const contentContainer = document.getElementById('Q&AContainer');
         if (contentContainer) {
-            const height = contentContainer.scrollHeight + 50; // extra buffer to avoid scrollbar
+            const height = contentContainer.scrollHeight + 50;
             window.parent.postMessage({ type: 'setIframeHeight', height: height }, 'https://www.menohello.com');
         }
     }
