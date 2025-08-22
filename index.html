@@ -223,6 +223,39 @@
     }
   }
 
+  // Function to process HTML content and ensure proper formatting
+  function processHTMLContent(content) {
+    if (!content) return '';
+    
+    // Basic safety: sanitize any potentially dangerous scripts while preserving formatting
+    let processed = content
+      .replace(/<script[^>]*>.*?<\/script>/gi, '')
+      .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '')
+      .replace(/on\w+\s*=\s*["'][^"']*["']/gi, ''); // Remove event handlers
+    
+    // Make all links open in new windows with security attributes
+    processed = processed.replace(/<a\s+([^>]*?)>/gi, (match, attributes) => {
+      // Check if target is already specified
+      if (!/target\s*=/i.test(attributes)) {
+        attributes += ' target="_blank"';
+      }
+      // Check if rel is already specified, if not add security attributes
+      if (!/rel\s*=/i.test(attributes)) {
+        attributes += ' rel="noopener noreferrer"';
+      } else {
+        // If rel exists, ensure it includes noopener noreferrer
+        attributes = attributes.replace(/rel\s*=\s*["']([^"']*)["']/i, (relMatch, relValue) => {
+          if (!relValue.includes('noopener')) relValue += ' noopener';
+          if (!relValue.includes('noreferrer')) relValue += ' noreferrer';
+          return `rel="${relValue.trim()}"`;
+        });
+      }
+      return `<a ${attributes.trim()}>`;
+    });
+    
+    return processed;
+  }
+
   function createCategoryButtons() {
     categoriesContainer.innerHTML = '';
 
@@ -271,39 +304,6 @@
     // Reset currently open item when filtering
     currentlyOpenItem = null;
     renderQAItems();
-  }
-
-  // Function to process HTML content and ensure proper formatting
-  function processHTMLContent(content) {
-    if (!content) return '';
-    
-    // Basic safety: sanitize any potentially dangerous scripts while preserving formatting
-    let processed = content
-      .replace(/<script[^>]*>.*?<\/script>/gi, '')
-      .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '')
-      .replace(/on\w+\s*=\s*["'][^"']*["']/gi, ''); // Remove event handlers
-    
-    // Make all links open in new windows with security attributes
-    processed = processed.replace(/<a\s+([^>]*?)>/gi, (match, attributes) => {
-      // Check if target is already specified
-      if (!/target\s*=/i.test(attributes)) {
-        attributes += ' target="_blank"';
-      }
-      // Check if rel is already specified, if not add security attributes
-      if (!/rel\s*=/i.test(attributes)) {
-        attributes += ' rel="noopener noreferrer"';
-      } else {
-        // If rel exists, ensure it includes noopener noreferrer
-        attributes = attributes.replace(/rel\s*=\s*["']([^"']*)["']/i, (relMatch, relValue) => {
-          if (!relValue.includes('noopener')) relValue += ' noopener';
-          if (!relValue.includes('noreferrer')) relValue += ' noreferrer';
-          return `rel="${relValue.trim()}"`;
-        });
-      }
-      return `<a ${attributes.trim()}>`;
-    });
-    
-    return processed;
   }
 
   function renderQAItems() {
