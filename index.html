@@ -1,356 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Menopause Q&A</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden; /* Prevent horizontal scrollbar */
-    overflow-y: hidden; /* Prevent vertical scrollbar inside iframe */
-    font-family: 'Poppins', sans-serif;
-    background: #ffe9e5;
-    color: #000;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
-  #QandAHeader {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 20px;
-    max-width: 520px; /* Controls width of search + button */
-    width: 100%;
-  }
-  #Q\&AContainer {
-    padding: 20px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  #searchInput {
-    flex: 1;
-    font-size: 1rem;
-    padding: 10px 14px;
-    border-radius: 6px;
-    border: 1px solid #ffd2cb;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 400;
-  }
-  #clearSearch {
-    background: #cccccc;
-    border: none;
-    color: #666666;
-    padding: 10px 14px;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s ease, color 0.3s ease;
-    font-family: 'Poppins', sans-serif;
-    flex-shrink: 0;
-  }
-  #clearSearch.active {
-    background: #ffa798;
-    color: white;
-  }
-  #clearSearch.active:hover {
-    background: #ff8c7a;
-  }
-  #clearSearch:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-  #categoriesContainer {
-    margin-bottom: 25px;
-  }
-  .category-btn {
-    background: white;
-    border: 1px solid #ffd2cb;
-    border-radius: 6px;
-    padding: 8px 16px;
-    margin: 4px 8px 4px 0;
-    cursor: pointer;
-    font-weight: 600;
-    font-family: 'Poppins', sans-serif;
-    transition: background-color 0.3s ease;
-    color: black;
-    text-decoration: none;
-  }
-  .category-btn.active,
-  .category-btn:hover {
-    background-color: #ffa798;
-    color: white;
-    border-color: #ffa798;
-  }
-  .qa-item {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .qa-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-  .question {
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-    cursor: pointer;
-  }
-  .question:hover {
-    color: #ffa798;
-  }
-  .answer {
-    font-weight: 400;
-    font-size: 1rem;
-    line-height: 1.4;
-    white-space: pre-wrap;
-    display: none; /* Hidden by default */
-    margin-top: 10px;
-  }
-  .answer a {
-    color: #ffa798;
-    text-decoration: underline;
-    transition: color 0.3s ease;
-  }
-  .answer a:hover {
-    color: #ff8c7a;
-  }
-  .qa-item.open .answer {
-    display: block;
-  }
-  @media (max-width: 600px) {
-    #Q\&AContainer {
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Foods List from Google Sheets</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      line-height: 1.5;
+      background-color: #ffe9e5; /* Website background */
+    }
+    .category-section {
+      margin-bottom: 40px;
+    }
+    .category-header {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #333;
+      border-bottom: 2px solid #ffa798; /* Website accent */
+      padding-bottom: 5px;
+      background-color: white;
       padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(255, 167, 152, 0.1);
     }
-    #QandAHeader {
-      flex-direction: column;
-      max-width: 100%;
-      gap: 8px;
+    .food-grid {
+      display: flex;
+      gap: 40px;
+      max-width: 800px;
     }
-    #searchInput {
-      width: 100%;
-      min-width: 0;
+    .column {
+      flex: 1;
     }
-    #clearSearch {
-      width: 100%;
-      padding: 12px 14px;
+    
+    /* Mobile responsive design */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      
+      .food-grid {
+        flex-direction: column;
+        gap: 0;
+        max-width: 100%;
+      }
+      
+      .column {
+        width: 100%;
+      }
+      
+      .item {
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+      
+      .food {
+        margin-right: 5px;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+      
+      .grams {
+        margin-left: 5px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      
+      .category-header {
+        font-size: 1.3em;
+        padding: 10px;
+        margin-bottom: 15px;
+      }
+      
+      .note {
+        padding: 10px;
+        margin-top: 20px;
+      }
     }
-    .category-btn {
-      padding: 6px 12px;
-      margin: 3px 6px 3px 0;
-      font-size: 0.9rem;
+    .item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dotted #aaa;
+      padding: 4px 0;
     }
-  }
-</style>
+    .food {
+      margin-right: 10px;
+      white-space: nowrap;
+    }
+    .food-name {
+      font-weight: bold;
+    }
+    .food-description {
+      font-weight: normal;
+    }
+    .grams {
+      margin-left: 10px;
+      white-space: nowrap;
+    }
+    .loading {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+    }
+    .error {
+      color: #d32f2f;
+      background-color: #ffebee;
+      border: 1px solid #f8bbd9;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+  </style>
 </head>
 <body>
-<div id="Q&AContainer">
-<div id="QandAHeader">
-  <input type="text" id="searchInput" placeholder="Search questions, categories, or tags..." aria-label="Search questions" />
-  <button id="clearSearch">Clear Search</button>
-</div>
 
-<div id="categoriesContainer" aria-label="Category filters"></div>
+  <div id="content">
+    <div class="loading">Loading data from Google Sheets...</div>
+  </div>
 
-<div id="qaContainer" role="main" aria-live="polite"></div>
+  <script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSP_qig4NNi8vzTu9itx8AGeM1JkvYpPj5_UyPiAdo4PYaTrPiOd4ep75_pjenQSx25Pyd5gGJjycK4/pub?gid=0&single=true&output=csv';
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-<script>
-  const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO1U9U8o-4nOTkHG8X76aZa2OeOyJHdl0ENDM0dASstn9hStwSFLwbKwlswDG-hWe_ildJ8zVy2eja/pub?gid=0&single=true&output=csv';
-
-  let allData = [];
-  let filteredData = [];
-  let categories = new Set();
-  let activeCategory = 'All';
-  let currentlyOpenItem = null; // Track the currently open item
-
-  const searchInput = document.getElementById('searchInput');
-  const clearSearchBtn = document.getElementById('clearSearch');
-  const categoriesContainer = document.getElementById('categoriesContainer');
-  const qaContainer = document.getElementById('qaContainer');
-
-  // Function to update clear button state
-  function updateClearButtonState() {
-    const hasSearchTerm = searchInput.value.trim().length > 0;
-    if (hasSearchTerm) {
-      clearSearchBtn.classList.add('active');
-      clearSearchBtn.disabled = false;
-    } else {
-      clearSearchBtn.classList.remove('active');
-      clearSearchBtn.disabled = true;
-    }
-  }
-
-  function createCategoryButtons() {
-    categoriesContainer.innerHTML = '';
-
-    // Add "All" button first
-    const allBtn = document.createElement('button');
-    allBtn.textContent = 'All';
-    allBtn.className = 'category-btn active';
-    allBtn.addEventListener('click', () => {
-      activeCategory = 'All';
-      updateActiveCategoryButtons();
-      filterAndRender();
-    });
-    categoriesContainer.appendChild(allBtn);
-
-    Array.from(categories).sort().forEach(cat => {
-      const btn = document.createElement('button');
-      btn.textContent = cat;
-      btn.className = 'category-btn';
-      btn.addEventListener('click', () => {
-        activeCategory = cat;
-        updateActiveCategoryButtons();
-        filterAndRender();
-      });
-      categoriesContainer.appendChild(btn);
-    });
-  }
-
-  function updateActiveCategoryButtons() {
-    document.querySelectorAll('.category-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.textContent === activeCategory);
-    });
-  }
-
-  function filterAndRender() {
-    const searchTerm = searchInput.value.trim().toLowerCase();
-    updateClearButtonState(); // Update button state when filtering
-
-    filteredData = allData.filter(item => {
-      const inCategory = (activeCategory === 'All' || item.Category === activeCategory);
-      const searchableText = (item.Category + ' ' + item.Question + ' ' + item.Tags).toLowerCase();
-      const matchesSearch = searchableText.includes(searchTerm);
-
-      return inCategory && matchesSearch;
-    });
-
-    // Reset currently open item when filtering
-    currentlyOpenItem = null;
-    renderQAItems();
-  }
-
-  function renderQAItems() {
-    qaContainer.innerHTML = '';
-
-    if (filteredData.length === 0) {
-      qaContainer.innerHTML = '<p>No results found.</p>';
-      sendIframeHeight();
-      return;
-    }
-
-    filteredData.forEach(item => {
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'qa-item';
-
-      const question = document.createElement('div');
-      question.className = 'question';
-      question.textContent = item.Question;
-
-      const answer = document.createElement('div');
-      answer.className = 'answer';
-      answer.innerHTML = item.Answer;
-
-      // Ensure all links in the answer open in new tab
-      answer.querySelectorAll('a').forEach(link => {
-        link.setAttribute('target', '_blank');
-        link.setAttribute('rel', 'noopener noreferrer');
-      });
-
-      itemDiv.appendChild(question);
-      itemDiv.appendChild(answer);
-
-      itemDiv.addEventListener('click', () => {
-        if (currentlyOpenItem === itemDiv) {
-          itemDiv.classList.remove('open');
-          currentlyOpenItem = null;
-        } else {
-          if (currentlyOpenItem) {
-            currentlyOpenItem.classList.remove('open');
+    function parseCSV(text) {
+      // More robust CSV parsing
+      const result = [];
+      const lines = text.split(/\r?\n/); // Handle both \n and \r\n line endings
+      
+      console.log('Total lines found:', lines.length);
+      console.log('First few lines:', lines.slice(0, 5));
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line || line.trim() === '') continue;
+        
+        const row = [];
+        let current = '';
+        let inQuotes = false;
+        let j = 0;
+        
+        while (j < line.length) {
+          const char = line[j];
+          
+          if (char === '"') {
+            if (inQuotes && j + 1 < line.length && line[j + 1] === '"') {
+              // Handle escaped quotes
+              current += '"';
+              j += 2;
+            } else {
+              inQuotes = !inQuotes;
+              j++;
+            }
+          } else if (char === ',' && !inQuotes) {
+            row.push(current.replace(/^"|"$/g, '').trim()); // Remove surrounding quotes
+            current = '';
+            j++;
+          } else {
+            current += char;
+            j++;
           }
-          itemDiv.classList.add('open');
-          currentlyOpenItem = itemDiv;
         }
-        sendIframeHeight();
-      });
-
-      qaContainer.appendChild(itemDiv);
-    });
-
-    sendIframeHeight();
-  }
-
-  // Debounce helper
-  function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-  }
-
-  function loadData() {
-    Papa.parse(csvUrl, {
-      download: true,
-      header: true,
-      skipEmptyLines: true,
-      complete: function(results) {
-        allData = results.data.map(row => ({
-          Category: row['Category']?.trim() || '',
-          Question: row['Question']?.trim() || '',
-          Answer: row['Answer']?.trim() || '',
-          Tags: row['Tags']?.trim() || '',
-        }));
-
-        categories = new Set(allData.map(item => item.Category).filter(c => c));
-
-        createCategoryButtons();
-        updateClearButtonState(); // Initialize button state
-        filterAndRender();
-      },
-      error: function(err) {
-        qaContainer.innerHTML = '<p>Error loading data.</p>';
-        console.error('CSV load error:', err);
+        
+        // Add the last field
+        row.push(current.replace(/^"|"$/g, '').trim());
+        
+        if (row.some(cell => cell !== '')) { // Only add non-empty rows
+          result.push(row);
+        }
       }
-    });
-  }
+      
+      console.log('Parsed data:', result);
+      return result;
+    }
 
-  searchInput.addEventListener('input', debounce(filterAndRender, 250));
-  clearSearchBtn.addEventListener('click', () => {
-    searchInput.value = '';
-    updateClearButtonState();
-    filterAndRender();
-  });
-
-  loadData();
-</script>
-</div>
-<script>
-    function sendIframeHeight() {
-        const contentContainer = document.getElementById('Q&AContainer');
-        if (contentContainer) {
-            const height = contentContainer.scrollHeight + 50;
-            window.parent.postMessage({ type: 'setIframeHeight', height: height }, 'https://www.menohello.com');
+    function groupByCategory(data) {
+      const grouped = {};
+      
+      console.log('Grouping data. Total rows:', data.length);
+      
+      // Skip header row (index 0) if it exists
+      const startIndex = data.length > 0 && (data[0][0] === 'Category' || data[0][0] === 'category') ? 1 : 0;
+      
+      for (let i = startIndex; i < data.length; i++) {
+        const row = data[i];
+        console.log(`Row ${i}:`, row);
+        
+        const category = row[0] || '';
+        const item = row[1] || '';
+        const description = row[2] || '';
+        const amount = row[3] || '';
+        const grams = row[4] || '';
+        
+        // Skip rows without essential data
+        if (!category.trim() || !item.trim()) {
+          console.log(`Skipping row ${i}: missing category or item`);
+          continue;
         }
+        
+        if (!grouped[category]) {
+          grouped[category] = [];
+        }
+        
+        grouped[category].push({
+          item: item.trim(),
+          description: description.trim(),
+          amount: amount.trim(),
+          grams: grams.trim()
+        });
+      }
+      
+      // Alphabetize items within each category
+      for (const category in grouped) {
+        grouped[category].sort((a, b) => a.item.localeCompare(b.item));
+      }
+      
+      console.log('Grouped data:', grouped);
+      return grouped;
     }
-    window.addEventListener('DOMContentLoaded', sendIframeHeight);
-    window.addEventListener('load', sendIframeHeight);
-    const containerToObserve = document.getElementById('Q&AContainer'); 
-    if (containerToObserve) {
-        const resizeObserver = new ResizeObserver(sendIframeHeight);
-        resizeObserver.observe(containerToObserve);
+
+    function createHTML(groupedData) {
+      let html = '';
+      
+      for (const [category, items] of Object.entries(groupedData)) {
+        html += `<div class="category-section">`;
+        html += `<div class="category-header">${category}</div>`;
+        html += `<div class="food-grid">`;
+        
+        // Calculate how to split items for magazine-style layout
+        const totalItems = items.length;
+        const itemsPerColumn = Math.ceil(totalItems / 2);
+        
+        // Create left column
+        html += `<div class="column">`;
+        for (let i = 0; i < itemsPerColumn; i++) {
+          if (items[i]) {
+            const item = items[i];
+            const leftSide = `<span class="food-name">${item.item}</span>${item.description ? ` <span class="food-description">${item.description}</span>` : ''}${item.amount ? ` - ${item.amount}` : ''}`;
+            const rightSide = `${item.grams || '0'} g`;
+            
+            html += `<div class="item">`;
+            html += `<span class="food">${leftSide}</span>`;
+            html += `<span class="grams">${rightSide}</span>`;
+            html += `</div>`;
+          }
+        }
+        html += `</div>`;
+        
+        // Create right column
+        html += `<div class="column">`;
+        for (let i = itemsPerColumn; i < totalItems; i++) {
+          if (items[i]) {
+            const item = items[i];
+            const leftSide = `<span class="food-name">${item.item}</span>${item.description ? ` <span class="food-description">${item.description}</span>` : ''}${item.amount ? ` - ${item.amount}` : ''}`;
+            const rightSide = `${item.grams || '0'} g`;
+            
+            html += `<div class="item">`;
+            html += `<span class="food">${leftSide}</span>`;
+            html += `<span class="grams">${rightSide}</span>`;
+            html += `</div>`;
+          }
+        }
+        html += `</div>`;
+        
+        html += `</div>`;
+        html += `</div>`;
+      }
+      
+      return html;
     }
-</script>
+
+    async function loadData() {
+      try {
+        const response = await fetch(CSV_URL);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const text = await response.text();
+        const data = parseCSV(text);
+        const groupedData = groupByCategory(data);
+        
+        const contentDiv = document.getElementById('content');
+        
+        if (Object.keys(groupedData).length === 0) {
+          contentDiv.innerHTML = '<div class="error">No valid data found in the spreadsheet.</div>';
+          return;
+        }
+        
+        contentDiv.innerHTML = createHTML(groupedData);
+        
+        // Add note at the bottom
+        const noteHTML = `
+          <div class="note">
+            The amount of protein in each food listed above is an average. Protein content of foods may vary slightly depending on manufacturer.
+            In general, 2 Tablespoons (Tbsp) or a portion of poultry, beef, pork, or fish the size of 1/3 of a deck of cards would equal 1 ounce (oz) and provide about 7 grams of protein. 
+            A whole deck of cards would equal 3 ounces and provide about 21 grams of protein.
+          </div>
+        `;
+        contentDiv.innerHTML += noteHTML;
+        
+      } catch (error) {
+        console.error('Error loading data:', error);
+        const contentDiv = document.getElementById('content');
+        contentDiv.innerHTML = `
+          <div class="error">
+            <strong>Error loading data:</strong> ${error.message}<br>
+            Please check that your Google Sheets link is publicly accessible and the format is correct.
+          </div>
+        `;
+      }
+    }
+
+    // Load data when page loads
+    loadData();
+  </script>
 </body>
 </html>
