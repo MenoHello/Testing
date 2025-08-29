@@ -302,6 +302,9 @@
         `;
         contentDiv.innerHTML += noteHTML;
         
+        // Send height to parent frame after content loads
+        sendIframeHeight();
+        
       } catch (error) {
         console.error('Error loading data:', error);
         const contentDiv = document.getElementById('content');
@@ -316,6 +319,23 @@
 
     // Load data when page loads
     loadData();
+    
+    function sendIframeHeight() {
+        const contentContainer = document.getElementById('Protein-Foods-ListContainer');
+        if (contentContainer) {
+            const height = contentContainer.scrollHeight + 50; // extra buffer to avoid scrollbar
+            window.parent.postMessage({ type: 'setIframeHeight', height: height }, 'https://www.menohello.com');
+            console.log('Sending height to parent:', height);
+        }
+    }
+    
+    window.addEventListener('DOMContentLoaded', sendIframeHeight);
+    window.addEventListener('load', sendIframeHeight);
+    const containerToObserve = document.getElementById('Protein-Foods-ListContainer'); 
+    if (containerToObserve) {
+        const resizeObserver = new ResizeObserver(sendIframeHeight);
+        resizeObserver.observe(containerToObserve);
+    }
   </script>
 </body>
 </html>
